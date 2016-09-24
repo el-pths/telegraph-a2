@@ -39,29 +39,31 @@ void setup() {
 
 
 void loop() { 
-  byte letter = Serial.read();
-
-  if (letter < 0) {
-    return;
+  if (Serial.available() > 0) {
+    byte letter = byte(Serial.read());
+  
+    if (letter < 'A' || letter > 'Z') {
+      return;
+    }
+  
+    letter -= 'A';
+    
+    byte actions = table[letter];
+    byte countOfAction = actions >> 5;
+    
+    actions ^= (actions >> countOfAction) << countOfAction;
+  
+    byte count = 0;
+  
+    byte k = actions;
+  
+    while (k > 0) {
+      count++;
+      k >>= 1;
+    }
+    
+    getBin(countOfAction, actions);
   }
-
-  letter -= 'A';
-  
-  byte actions = table[letter];
-  byte countOfAction = actions >> 5;
-  
-  actions ^= (actions >> countOfAction) << countOfAction;
-
-  byte count = 0;
-
-  byte k = actions;
-
-  while (k > 0) {
-    count++;
-    k >>= 1;
-  }
-  
-  getBin(countOfAction, actions);
 }
 
 void getBin(byte bits, byte n) {
@@ -93,4 +95,3 @@ void notBlink(int i) {
   digitalWrite(pin, LOW);
   delay(i);
 }
-
