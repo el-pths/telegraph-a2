@@ -39,11 +39,13 @@ void setup() {
 
 
 void loop() { 
-  byte letter = byte(Serial.read() - 'A');
+  byte letter = Serial.read();
 
-  if (letter == 190) {
+  if (letter < 0) {
     return;
   }
+
+  letter -= 'A';
   
   byte actions = table[letter];
   byte countOfAction = actions >> 5;
